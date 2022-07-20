@@ -1,6 +1,17 @@
 let gamePattern = [];
-userClickedPattern = [];
+let userClickedPattern = [];
 let buttonColors = ["red", "blue", "green", "yellow"];
+let isStarted=false;
+let level=0;
+
+
+$(document).on("keydown",function(){
+    if(!isStarted){
+    $("h1").html("level "+level);
+    nextSequence();
+    isStarted=true;
+    }
+     });
 
 $(".btn").click(function(){
     let userChoosenColor=$(this).attr("id");
@@ -9,10 +20,33 @@ $(".btn").click(function(){
     animatePress(userChoosenColor);
     checkAnswer(userClickedPattern.length-1);
 })
-let isStarted=false;
-let level=0;
+
+
+
+
+
+function checkAnswer(currentLevel){
+    if(userClickedPattern[currentLevel]===gamePattern[currentLevel])
+    {
+        if(userClickedPattern.length === gamePattern.length)
+        {
+            setTimeout(nextSequence,1000);
+            
+        }
+    }
+    else{
+       playSound("wrong");
+        $("body").addClass("game-over");
+        setTimeout(function(){
+            $("body").removeClass("game-over")
+        },200);
+        $("#level-title").text("Game over, Press any key to restart");
+        startOver();
+    }
+    
+}
 function nextSequence() {
-  
+    userClickedPattern=[];
    let randomNumber = Math.floor(Math.random() * 3) + 1;
 
     let randomChoosenColor = buttonColors[randomNumber];
@@ -40,56 +74,14 @@ function animatePress(buttonColor){
     },100);
 }
 
-$(document).on("keydown",function(){
-    if(!isStarted){
-    $("h1").html("level "+level);
-    nextSequence();
-    isStarted=true;
-    }
-    
-});
 
 
-function checkAnswer(currentLevel){
-    if(userClickedPattern[currentLevel]===gamePattern[currentLevel])
-    {
-        if(userClickedPattern.length === gamePattern.length)
-        {
-            setTimeout(nextSequence,1000);
-            userClickedPattern=[];
-        }
-    }
-    else{
-        const audio=new Audio("sounds/wrong.mp3");
-        audio.play();
-        $("body").addClass("game-over");
-        setTimeout(function(){
-            $("body").removeClass("game-over")
-        },200);
-        $("#level-title").text("Game over, Press any key to restart");
-        startOver();
-    }
-    
-}
+
 
 function startOver(){
     level=0;
     gamePattern=[];
     isStarted=false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
